@@ -352,7 +352,6 @@
                   </div>
                   <div style="display:flex;flex-direction:column;gap:8px;">
                     <button type="button" id="clearAllCountriesBtn" class="ghost-btn" style="height:56px;background:#23b59c;border-color:#23b59c;color:#fff;">删除所有国家</button>
-                    <button type="button" id="restoreAllCountriesBtn" class="ghost-btn" style="height:40px;">恢复全部国家</button>
                   </div>
                 </div>
 
@@ -546,7 +545,6 @@
     const countryList = document.getElementById('countryList');
     const countryStatus = document.getElementById('countryStatus');
     const clearAllCountriesBtn = document.getElementById('clearAllCountriesBtn');
-    const restoreAllCountriesBtn = document.getElementById('restoreAllCountriesBtn');
 
     let swapLockedType = null;
     let groupIdSeed = 1;
@@ -813,8 +811,7 @@
           ? `当前搜索关键词：${regionState.keyword}`
           : '可直接点击添加或取消国家。');
 
-      restoreAllCountriesBtn.textContent = selectedCountriesCount() === countryData.length ? '已恢复全部国家' : '恢复全部国家';
-      restoreAllCountriesBtn.disabled = selectedCountriesCount() === countryData.length;
+      clearAllCountriesBtn.textContent = selectedCountriesCount() === countryData.length ? '删除所有国家' : '添加所有国家';
 
       if (!visibleCountries.length) {
         const emptyState = document.createElement('div');
@@ -890,12 +887,11 @@
     });
 
     clearAllCountriesBtn.addEventListener('click', () => {
-      regionState.selectedCountryCodes.clear();
-      renderRegionPicker();
-    });
-
-    restoreAllCountriesBtn.addEventListener('click', () => {
-      regionState.selectedCountryCodes = new Set(countryData.map(country => country.code));
+      if (selectedCountriesCount() === countryData.length) {
+        regionState.selectedCountryCodes.clear();
+      } else {
+        regionState.selectedCountryCodes = new Set(countryData.map(country => country.code));
+      }
       renderRegionPicker();
     });
 
