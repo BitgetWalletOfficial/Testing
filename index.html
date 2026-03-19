@@ -119,7 +119,6 @@
 
     .region-picker{display:flex;flex-direction:column;gap:12px}
     .region-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-    .region-toolbar .select{max-width:220px}
     .search-inline{position:relative;flex:1;min-width:280px}
     .search-inline input{padding-left:38px}
     .search-inline span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#86909c}
@@ -340,15 +339,6 @@
             <div>
               <div class="region-picker">
                 <div class="region-toolbar">
-                  <select id="regionFilterSelect" class="select">
-                    <option value="" selected>按区域筛选国家</option>
-                    <option value="americas">美洲</option>
-                    <option value="europe">欧洲</option>
-                    <option value="africa">非洲</option>
-                    <option value="middle-east">中东</option>
-                    <option value="asia">亚洲</option>
-                    <option value="oceania">大洋洲</option>
-                  </select>
                   <label class="search-inline">
                     <span>⌕</span>
                     <input id="countrySearchInput" class="field" placeholder="搜索国家 / 地区 / 代码" />
@@ -368,7 +358,7 @@
                   <div id="countryList" class="country-search-result"></div>
                 </div>
               </div>
-              <div id="countryStatus" class="hint">默认已选全部国家；可先按区域缩小范围，再搜索国家。</div>
+              <div id="countryStatus" class="hint">默认已选全部国家；可直接搜索并缩小范围。</div>
             </div>
           </div>
 
@@ -553,47 +543,36 @@
     const countryList = document.getElementById('countryList');
     const countryStatus = document.getElementById('countryStatus');
     const clearAllCountriesBtn = document.getElementById('clearAllCountriesBtn');
-    const regionFilterSelect = document.getElementById('regionFilterSelect');
 
     let swapLockedType = null;
     let groupIdSeed = 1;
 
-    const regionData = [
-      { id: 'americas', name: '美洲', countries: ['US','CA','BR','AR'] },
-      { id: 'europe', name: '欧洲', countries: ['GB','DE','FR','ES','IT','TR'] },
-      { id: 'africa', name: '非洲', countries: ['NG','ZA'] },
-      { id: 'middle-east', name: '中东', countries: ['AE','SA','TR'] },
-      { id: 'asia', name: '亚洲', countries: ['IN','JP','KR','SG','TH','VN'] },
-      { id: 'oceania', name: '大洋洲', countries: ['AU','NZ'] }
-    ];
-
     const countryData = [
-      { code: 'US', name: 'United States', zh: '美国', continent: 'americas' },
-      { code: 'CA', name: 'Canada', zh: '加拿大', continent: 'americas' },
-      { code: 'BR', name: 'Brazil', zh: '巴西', continent: 'americas' },
-      { code: 'AR', name: 'Argentina', zh: '阿根廷', continent: 'americas' },
-      { code: 'GB', name: 'United Kingdom', zh: '英国', continent: 'europe' },
-      { code: 'DE', name: 'Germany', zh: '德国', continent: 'europe' },
-      { code: 'FR', name: 'France', zh: '法国', continent: 'europe' },
-      { code: 'ES', name: 'Spain', zh: '西班牙', continent: 'europe' },
-      { code: 'IT', name: 'Italy', zh: '意大利', continent: 'europe' },
-      { code: 'TR', name: 'Turkey', zh: '土耳其', continent: 'middle-east' },
-      { code: 'NG', name: 'Nigeria', zh: '尼日利亚', continent: 'africa' },
-      { code: 'ZA', name: 'South Africa', zh: '南非', continent: 'africa' },
-      { code: 'AE', name: 'United Arab Emirates', zh: '阿联酋', continent: 'middle-east' },
-      { code: 'SA', name: 'Saudi Arabia', zh: '沙特阿拉伯', continent: 'middle-east' },
-      { code: 'IN', name: 'India', zh: '印度', continent: 'asia' },
-      { code: 'JP', name: 'Japan', zh: '日本', continent: 'asia' },
-      { code: 'KR', name: 'South Korea', zh: '韩国', continent: 'asia' },
-      { code: 'SG', name: 'Singapore', zh: '新加坡', continent: 'asia' },
-      { code: 'TH', name: 'Thailand', zh: '泰国', continent: 'asia' },
-      { code: 'VN', name: 'Vietnam', zh: '越南', continent: 'asia' },
-      { code: 'AU', name: 'Australia', zh: '澳大利亚', continent: 'oceania' },
-      { code: 'NZ', name: 'New Zealand', zh: '新西兰', continent: 'oceania' }
+      { code: 'US', name: 'United States', zh: '美国' },
+      { code: 'CA', name: 'Canada', zh: '加拿大' },
+      { code: 'BR', name: 'Brazil', zh: '巴西' },
+      { code: 'AR', name: 'Argentina', zh: '阿根廷' },
+      { code: 'GB', name: 'United Kingdom', zh: '英国' },
+      { code: 'DE', name: 'Germany', zh: '德国' },
+      { code: 'FR', name: 'France', zh: '法国' },
+      { code: 'ES', name: 'Spain', zh: '西班牙' },
+      { code: 'IT', name: 'Italy', zh: '意大利' },
+      { code: 'TR', name: 'Turkey', zh: '土耳其' },
+      { code: 'NG', name: 'Nigeria', zh: '尼日利亚' },
+      { code: 'ZA', name: 'South Africa', zh: '南非' },
+      { code: 'AE', name: 'United Arab Emirates', zh: '阿联酋' },
+      { code: 'SA', name: 'Saudi Arabia', zh: '沙特阿拉伯' },
+      { code: 'IN', name: 'India', zh: '印度' },
+      { code: 'JP', name: 'Japan', zh: '日本' },
+      { code: 'KR', name: 'South Korea', zh: '韩国' },
+      { code: 'SG', name: 'Singapore', zh: '新加坡' },
+      { code: 'TH', name: 'Thailand', zh: '泰国' },
+      { code: 'VN', name: 'Vietnam', zh: '越南' },
+      { code: 'AU', name: 'Australia', zh: '澳大利亚' },
+      { code: 'NZ', name: 'New Zealand', zh: '新西兰' }
     ];
 
     const regionState = {
-      activeRegionId: '',
       selectedCountryCodes: new Set(countryData.map(country => country.code)),
       keyword: ''
     };
@@ -772,17 +751,11 @@
       syncSortList();
     }
 
-    function getRegionById(id) {
-      return regionData.find(region => region.id === id);
-    }
-
     function getVisibleCountries() {
       const keyword = regionState.keyword.trim().toLowerCase();
-      const activeRegion = getRegionById(regionState.activeRegionId);
       return countryData.filter(country => {
-        const matchesRegion = !activeRegion || activeRegion.countries.includes(country.code);
         const matchesKeyword = !keyword || [country.code, country.name, country.zh].some(value => value.toLowerCase().includes(keyword));
-        return matchesRegion && matchesKeyword;
+        return matchesKeyword;
       });
     }
 
@@ -829,13 +802,12 @@
 
     function renderCountries() {
       const visibleCountries = getVisibleCountries();
-      const activeRegionName = getRegionById(regionState.activeRegionId)?.name || '全部国家';
       countryList.innerHTML = '';
       countryStatus.textContent = selectedCountriesCount() === countryData.length
         ? '当前默认已选全部国家。'
         : (regionState.keyword
-          ? `当前范围：${activeRegionName}，搜索关键词：${regionState.keyword}`
-          : `当前范围：${activeRegionName}，可直接点击添加或取消国家。`);
+          ? `当前搜索关键词：${regionState.keyword}`
+          : '可直接点击添加或取消国家。');
 
       const allCountriesItem = document.createElement('button');
       allCountriesItem.type = 'button';
@@ -869,7 +841,7 @@
         item.innerHTML = `
           <div class="country-copy">
             <span>${country.zh} · ${country.name}</span>
-            <span class="country-meta">${country.code}${regionState.activeRegionId ? ` · ${activeRegionName}` : ''}</span>
+            <span class="country-meta">${country.code}</span>
           </div>
           <span>${isActive ? '已添加' : '添加'}</span>
         `;
@@ -920,14 +892,6 @@
     });
 
     addGroupBtn.addEventListener('click', createGroup);
-
-    regionFilterSelect.addEventListener('change', e => {
-      regionState.activeRegionId = e.target.value;
-      countrySearchInput.value = '';
-      regionState.keyword = '';
-      renderCountries();
-      countrySearchInput.focus();
-    });
 
     countrySearchInput.addEventListener('input', e => {
       regionState.keyword = e.target.value;
