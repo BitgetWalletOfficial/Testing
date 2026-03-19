@@ -341,7 +341,7 @@
               <div class="region-picker">
                 <div class="region-toolbar">
                   <select id="regionFilterSelect" class="select">
-                    <option value="all">全部区域</option>
+                    <option value="" selected>按区域筛选国家</option>
                     <option value="americas">美洲</option>
                     <option value="europe">欧洲</option>
                     <option value="africa">非洲</option>
@@ -351,7 +351,7 @@
                   </select>
                   <label class="search-inline">
                     <span>⌕</span>
-                    <input id="countrySearchInput" class="field" placeholder="搜索当前区域下的国家 / 地区 / 代码" />
+                    <input id="countrySearchInput" class="field" placeholder="搜索国家 / 地区 / 代码" />
                   </label>
                 </div>
 
@@ -368,7 +368,7 @@
                   <div id="countryList" class="country-search-result"></div>
                 </div>
               </div>
-              <div id="countryStatus" class="hint">默认已选全部区域，即所有国家；如需缩小范围，可切换区域后再搜索。</div>
+              <div id="countryStatus" class="hint">默认已选全部国家；可先按区域缩小范围，再搜索国家。</div>
             </div>
           </div>
 
@@ -559,7 +559,6 @@
     let groupIdSeed = 1;
 
     const regionData = [
-      { id: 'all', name: '全部区域', countries: ['US','CA','BR','AR','GB','DE','FR','ES','IT','TR','NG','ZA','AE','SA','IN','JP','KR','SG','TH','VN','AU','NZ'] },
       { id: 'americas', name: '美洲', countries: ['US','CA','BR','AR'] },
       { id: 'europe', name: '欧洲', countries: ['GB','DE','FR','ES','IT','TR'] },
       { id: 'africa', name: '非洲', countries: ['NG','ZA'] },
@@ -594,7 +593,7 @@
     ];
 
     const regionState = {
-      activeRegionId: 'all',
+      activeRegionId: '',
       selectedCountryCodes: new Set(countryData.map(country => country.code)),
       keyword: ''
     };
@@ -779,9 +778,9 @@
 
     function getVisibleCountries() {
       const keyword = regionState.keyword.trim().toLowerCase();
-      const activeRegion = getRegionById(regionState.activeRegionId) || getRegionById('all');
+      const activeRegion = getRegionById(regionState.activeRegionId);
       return countryData.filter(country => {
-        const matchesRegion = activeRegion.id === 'all' || activeRegion.countries.includes(country.code);
+        const matchesRegion = !activeRegion || activeRegion.countries.includes(country.code);
         const matchesKeyword = !keyword || [country.code, country.name, country.zh].some(value => value.toLowerCase().includes(keyword));
         return matchesRegion && matchesKeyword;
       });
@@ -809,7 +808,7 @@
       }
 
       if (selectedCountries.length === countryData.length) {
-        renderChip(selectedCountryBox, '全部区域（所有国家）', () => {
+        renderChip(selectedCountryBox, '全部国家', () => {
           regionState.selectedCountryCodes.clear();
           renderRegionPicker();
         });
@@ -830,16 +829,35 @@
 
     function renderCountries() {
       const visibleCountries = getVisibleCountries();
-      const activeRegionName = getRegionById(regionState.activeRegionId)?.name || '全部区域';
+      const activeRegionName = getRegionById(regionState.activeRegionId)?.name || '全部国家';
       countryList.innerHTML = '';
       countryStatus.textContent = selectedCountriesCount() === countryData.length
-        ? '当前默认已选全部区域，即所有国家。'
+        ? '当前默认已选全部国家。'
         : (regionState.keyword
-          ? `当前区域：${activeRegionName}，搜索关键词：${regionState.keyword}`
-          : `当前区域：${activeRegionName}，可直接点击添加国家。`);
+          ? `当前范围：${activeRegionName}，搜索关键词：${regionState.keyword}`
+          : `当前范围：${activeRegionName}，可直接点击添加或取消国家。`);
+
+      const allCountriesItem = document.createElement('button');
+      allCountriesItem.type = 'button';
+      allCountriesItem.className = 'country-option' + (selectedCountriesCount() === countryData.length ? ' active' : '');
+      allCountriesItem.innerHTML = `
+        <div class="country-copy">
+          <span>全部国家</span>
+          <span class="country-meta">快速恢复为默认投放范围</span>
+        </div>
+        <span>${selectedCountriesCount() === countryData.length ? '已选中' : '一键全选'}</span>
+      `;
+      allCountriesItem.addEventListener('click', () => {
+        regionState.selectedCountryCodes = new Set(countryData.map(country => country.code));
+        renderRegionPicker();
+      });
+      countryList.appendChild(allCountriesItem);
 
       if (!visibleCountries.length) {
-        countryList.innerHTML = '<div class="empty-state">当前区域下没有匹配国家，请调整搜索词。</div>';
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.textContent = '当前区域下没有匹配国家，请调整搜索词。';
+        countryList.appendChild(emptyState);
         return;
       }
 
@@ -851,7 +869,7 @@
         item.innerHTML = `
           <div class="country-copy">
             <span>${country.zh} · ${country.name}</span>
-            <span class="country-meta">${country.code}</span>
+            <span class="country-meta">${country.code}${regionState.activeRegionId ? ` · ${activeRegionName}` : ''}</span>
           </div>
           <span>${isActive ? '已添加' : '添加'}</span>
         `;
@@ -908,6 +926,7 @@
       countrySearchInput.value = '';
       regionState.keyword = '';
       renderCountries();
+      countrySearchInput.focus();
     });
 
     countrySearchInput.addEventListener('input', e => {
