@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>新增赚币活动配置</title>
+  <style>
+    :root{
+      --bg:#f7f8fa; --panel:#fff; --text:#1f2329; --muted:#86909c; --line:#e5e6eb;
+      --primary:#1677ff; --primary-weak:#edf5ff; --danger:#f53f3f;
+      --success:#23b59c; --success-weak:#e8fbf7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; overflow-x:hidden; background:var(--bg); color:var(--text);
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    .sidebar{
+      position:fixed; left:0; top:0; width:292px; height:100vh; overflow-y:auto; z-index:100;
+      background:#fff; border-right:1px solid var(--line); display:flex; flex-direction:column;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid var(--line);
+      font-size:14px;font-weight:700
+    }
+    .brand-icon{
+      width:32px;height:32px;border-radius:8px;background:#1677ff;color:#fff;display:flex;
+      align-items:center;justify-content:center;font-weight:800
+    }
+    .nav{padding:12px 10px;font-size:13px;color:#4e5969}
+    .nav-title{padding:10px 12px;color:#86909c}
+    .nav-item,.nav-sub{
+      display:flex;align-items:center;justify-content:space-between;padding:10px 12px;
+      border-radius:8px;cursor:pointer
+    }
+    .nav-item:hover,.nav-sub:hover{background:#f2f3f5}
+    .nav-sublist{padding-left:24px}
+    .nav-sub.active{background:#edf5ff;color:#1677ff;font-weight:600}
+    .sidebar-footer{
+      margin-top:auto;padding:14px 16px;border-top:1px solid var(--line);font-size:12px;
+      color:#4e5969;line-height:1.6
+    }
+
+    .main{margin-left:292px; min-width:0;}
+    .topbar{
+      height:64px;padding:0 20px;display:flex;align-items:center;justify-content:flex-end;
+      border-bottom:1px solid var(--line)
+    }
+    .searchbar{
+      width:250px;height:36px;border:1px solid var(--line);border-radius:10px;background:#fff;
+      display:flex;align-items:center;gap:8px;padding:0 12px;color:#86909c
+    }
+    .searchbar input{border:none;outline:none;flex:1;font-size:14px;background:transparent}
+    .page{padding:20px; max-width:1440px}
+    .page-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .back-btn{
+      height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);
+      background:#fff;font-size:13px;cursor:pointer
+    }
+    .page-title{font-size:18px;font-weight:700}
+
+    .section{margin-top:18px}
+    .section-title{
+      font-size:16px;font-weight:700;margin:0 0 12px;padding-bottom:10px;
+      border-bottom:1px solid var(--line)
+    }
+    .form{width:100%; max-width:1080px}
+    .row{
+      display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start;
+      margin-bottom:16px
+    }
+    .label{font-size:14px;font-weight:600;line-height:36px;color:#1d2129}
+    .req{color:var(--danger);margin-right:4px}
+    .field,.select,.textarea,.date-input{
+      width:100%; border:1px solid var(--line); background:#fff; border-radius:10px;
+      color:#1d2129; font-size:14px; padding:8px 12px; outline:none;
+    }
+    .field,.select,.date-input{height:44px}
+    .textarea{min-height:110px; resize:vertical; padding-top:10px}
+    .field:focus,.select:focus,.textarea:focus,.date-input:focus{
+      border-color:#94bfff;box-shadow:0 0 0 3px rgba(22,119,255,.08)
+    }
+    .select{
+      appearance:none;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2399a1af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat:no-repeat;background-position:right 12px center;padding-right:36px
+    }
+    .hint{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.6}
+    .subgrid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .upload{display:flex;align-items:flex-start;gap:16px}
+    .upload-box{
+      width:88px;height:88px;border:1px dashed #c9cdd4;border-radius:10px;background:#fff;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+      font-size:12px;color:#86909c;cursor:pointer
+    }
+    .date-range{display:grid;grid-template-columns:1fr 24px 1fr;gap:8px;align-items:center}
+    .date-sep{text-align:center;color:#86909c}
+    .radio-row{display:flex;flex-wrap:wrap;gap:18px;padding-top:8px}
+    .choice{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4e5969}
+    .choice input{width:16px;height:16px;accent-color:#1677ff}
+    .tag-input-wrap{
+      min-height:44px;border:1px solid var(--line);background:#fff;border-radius:10px;
+      padding:6px 10px;display:flex;align-items:center;justify-content:space-between;
+      gap:8px;cursor:pointer
+    }
+    .token-chip,.mini-tag{
+      height:30px;border-radius:999px;background:var(--success);color:#fff;display:inline-flex;
+      align-items:center;gap:8px;padding:0 12px;font-size:14px;font-weight:600
+    }
+    .token-chip button,.mini-tag button{
+      border:none;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:0;line-height:1
+    }
+    .dropdown-mock{
+      border:1px solid var(--line);background:#fff;border-radius:10px;overflow:hidden;
+      box-shadow:0 6px 16px rgba(0,0,0,.08);margin-top:6px;position:relative;z-index:2
+    }
+    .dropdown-item{padding:12px 14px;font-size:14px;border-top:1px solid #f2f3f5;cursor:pointer}
+    .dropdown-item.active{background:#4c90cf;color:#fff}
+
+    .region-picker{
+      border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px;
+      display:flex;flex-direction:column;gap:16px
+    }
+    .picker-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .picker-search{position:relative;flex:1;min-width:260px}
+    .picker-search input{padding-left:38px}
+    .picker-search span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#86909c}
+    .picker-actions{display:flex;flex-wrap:wrap;gap:8px}
+    .text-btn{
+      height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:#fff;
+      color:#4e5969;font-size:13px;cursor:pointer
+    }
+    .text-btn.primary{background:var(--primary-weak);border-color:#cfe1ff;color:var(--primary)}
+    .selection-summary{
+      display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:start
+    }
+    .ip-box{
+      border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;min-height:56px;
+      display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start
+    }
+    .placeholder{font-size:13px;color:var(--muted)}
+    .picker-panels{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px}
+    .panel{
+      border:1px solid var(--line);border-radius:12px;background:#fbfcfd;min-height:320px;
+      display:flex;flex-direction:column;overflow:hidden
+    }
+    .panel-header{
+      padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700;
+      color:#4e5969;background:#fff
+    }
+    .continent-list,.country-list{padding:8px;display:flex;flex-direction:column;gap:6px}
+    .continent-item,.country-item{
+      display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer
+    }
+    .continent-item:hover,.country-item:hover{background:#f2f3f5}
+    .continent-item.active{background:#edf5ff;color:#1677ff}
+    .continent-meta{margin-left:auto;font-size:12px;color:#86909c}
+    .country-item input,.continent-item input{margin-top:2px;accent-color:#1677ff}
+    .country-copy{display:flex;flex-direction:column;gap:4px}
+    .country-meta{font-size:12px;color:#86909c}
+    .country-item.selected{background:#f7fbff;border:1px solid #d7e8ff}
+    .country-grid-header{
+      display:flex;justify-content:space-between;align-items:center;padding:12px 14px 0;font-size:13px;color:#4e5969
+    }
+    .empty-state{padding:24px 16px;color:#86909c;font-size:13px;text-align:center}
+
+    .inline-number{display:flex;align-items:center;gap:10px}
+    .inline-number .field{max-width:180px}
+
+    .toolbar{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:16px}
+    .primary-btn,.ghost-btn,.danger-btn,.line-btn{
+      height:40px;border-radius:10px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer
+    }
+    .primary-btn{background:#1677ff;color:#fff;border:none}
+    .ghost-btn,.line-btn{background:#fff;border:1px solid var(--line);color:#1d2129}
+    .danger-btn{background:#fff1f0;color:#f53f3f;border:1px solid #ffccc7}
+
+    .sort-panel{margin:16px 0 18px}
+    .sort-title{font-size:14px;color:#4e5969;margin-bottom:10px;font-weight:600}
+    .sort-list{display:flex;flex-direction:column;gap:12px}
+    .sort-item{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);
+      background:#fff;border-radius:10px;padding:14px 18px;cursor:grab
+    }
+    .sort-item.dragging{opacity:.6;background:#f7fbff}
+    .sort-left{display:flex;align-items:center;gap:14px;min-width:0}
+    .drag-icon{color:#86909c;font-size:20px;user-select:none}
+    .sort-badge{
+      width:34px;height:34px;border-radius:999px;background:#14b8a6;color:#fff;
+      display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700
+    }
+    .sort-name{
+      font-size:14px;color:#4e5969;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+    }
+    .sort-remove{border:none;background:transparent;color:#c9cdd4;font-size:24px;cursor:pointer}
+
+    .group-list{display:flex;flex-direction:column;gap:16px;width:100%}
+    .group-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:20px;position:relative}
+    .group-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .group-title{font-size:28px;font-weight:700;line-height:1.2}
+    .group-card .row{grid-template-columns:240px minmax(0,1fr)}
+    .group-card .label{font-size:18px;line-height:44px}
+    .group-card .field,.group-card .select,.group-card .date-input{height:54px;font-size:18px}
+    .group-card .textarea{min-height:110px;font-size:18px}
+    .task-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+    .task-card{border:1px solid #edf0f3;border-radius:10px;padding:14px;background:#fbfcfd}
+    .task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+
+    .footer{display:flex;gap:12px;margin-top:24px;padding-left:244px;padding-bottom:32px}
+    .hidden{display:none !important;}
+
+    @media (max-width:1100px){
+      .sidebar{width:240px}
+      .main{margin-left:240px}
+      .page{padding:16px;min-width:980px}
+      .picker-panels{grid-template-columns:1fr}
+      .selection-summary{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">B</div>
+      <div>Bitget Wallet 运营管理后台</div>
+    </div>
+    <div class="nav">
+      <div class="nav-title">概览</div>
+      <div class="nav-item"><span>增长 Growth</span><span>⌄</span></div>
+      <div class="nav-sublist">
+        <div class="nav-sub">任务配置</div>
+        <div class="nav-sub active">活动配置</div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      jacky.w<br/>
+      jacky.w@bitget.com
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <label class="searchbar">
+        <span>⌕</span>
+        <input placeholder="Search..." />
+      </label>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <button class="back-btn">← 返回</button>
+        <div class="page-title">新增赚币活动</div>
+      </div>
+
+      <section class="section">
+        <h3 class="section-title">赚币活动基础信息</h3>
+        <div class="form">
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动名称（内部展示）</div>
+            <div><input class="field" placeholder="请输入活动名称（内部展示）" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动EN名称（用户展示）</div>
+            <div><input class="field" placeholder="请输入活动EN名称" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>名称副标题（用户展示）</div>
+            <div><input class="field" placeholder="请输入名称副标题" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动EN描述（用户展示）</div>
+            <div><textarea class="textarea" placeholder="请输入活动EN描述"></textarea></div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动页ICON</div>
+            <div class="upload">
+              <label class="upload-box">
+                <span style="font-size:20px">⇪</span>
+                <span>上传</span>
+                <input type="file" hidden />
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动类型</div>
+            <div>
+              <select id="activityLevel" class="select">
+                <option value="S">S·如FOMO</option>
+                <option value="A">A·如交易竞赛，其他重要活动</option>
+                <option value="B" selected>B·其他小型抽奖活动</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="levelExtraRow" class="row" style="display:none;">
+            <div class="label"><span class="req">*</span>高级活动配置</div>
+            <div class="subgrid-3">
+              <div>
+                <div class="hint" style="margin:0 0 6px">背景图EN</div>
+                <div class="upload">
+                  <label class="upload-box">
+                    <span style="font-size:20px">⇪</span>
+                    <span>上传</span>
+                    <input type="file" hidden />
+                  </label>
+                </div>
+              </div>
+              <div>
+                <div class="hint" style="margin:0 0 6px">背景图中文</div>
+                <div class="upload">
+                  <label class="upload-box">
+                    <span style="font-size:20px">⇪</span>
+                    <span>上传</span>
+                    <input type="file" hidden />
+                  </label>
+                </div>
+              </div>
+              <div>
+                <div class="hint" style="margin:0 0 6px">主题边框颜色</div>
+                <input class="field" placeholder="#1677ff" />
+              </div>
+            </div>
+          </div>
+
+          <div id="jumpLinkRow" class="row" style="display:none;">
+            <div class="label">活动跳转链接</div>
+            <div><input class="field" placeholder="选填：请输入活动跳转链接" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动标签</div>
+            <div>
+              <div id="tagSelectBox" class="tag-input-wrap">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="token-chip">Quests <button type="button">×</button></span>
+                </div>
+                <span style="color:#86909c;">⌄</span>
+              </div>
+              <div id="tagDropdown" class="dropdown-mock hidden">
+                <div class="dropdown-item active">新·FOMO 星期四</div>
+                <div class="dropdown-item">交易竞技场</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>活动有效期</div>
+            <div class="date-range">
+              <input class="date-input" type="datetime-local" />
+              <div class="date-sep">-</div>
+              <input class="date-input" type="datetime-local" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>投放IP区域</div>
+            <div>
+              <div class="region-picker">
+                <div class="picker-toolbar">
+                  <label class="picker-search">
+                    <span>⌕</span>
+                    <input id="countrySearchInput" class="field" placeholder="搜索国家 / 地区 / 代码" />
+                  </label>
+                  <div class="picker-actions">
+                    <button type="button" id="selectAllVisibleBtn" class="text-btn primary">选中当前列表</button>
+                    <button type="button" id="resetCountrySelectionBtn" class="text-btn">清空国家</button>
+                    <button type="button" id="resetContinentSelectionBtn" class="text-btn">恢复全部区域</button>
+                  </div>
+                </div>
+
+                <div class="selection-summary">
+                  <div>
+                    <div class="hint" style="margin:0 0 8px">已选区域</div>
+                    <div id="selectedRegionBox" class="ip-box"></div>
+                  </div>
+                  <div>
+                    <div class="hint" style="margin:0 0 8px">已选国家</div>
+                    <div id="selectedCountryBox" class="ip-box"></div>
+                  </div>
+                  <button type="button" id="clearAllCountriesBtn" class="ghost-btn" style="height:56px;background:#23b59c;border-color:#23b59c;color:#fff;">删除所有国家</button>
+                </div>
+
+                <div class="picker-panels">
+                  <div class="panel">
+                    <div class="panel-header">区域筛选</div>
+                    <div id="continentList" class="continent-list"></div>
+                  </div>
+                  <div class="panel">
+                    <div class="panel-header">国家列表</div>
+                    <div class="country-grid-header">
+                      <span id="countryCounter">0 个国家</span>
+                      <span class="hint" id="countryStatus">支持先选区域，再精确圈选国家</span>
+                    </div>
+                    <div id="countryList" class="country-list"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="hint">支持按区域快速过滤，再按国家多选；删除标签即可快速回退。</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>任务展示人数</div>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="displayPeople" value="participant" checked /> 参与人数</label>
+              <label class="choice"><input type="radio" name="displayPeople" value="completed" /> 完成人数</label>
+              <label class="choice"><input type="radio" name="displayPeople" value="none" /> 不展示</label>
+            </div>
+          </div>
+
+          <div id="peopleExtRow" class="row">
+            <div class="label">虚拟人数 外部展示增加</div>
+            <div class="inline-number">
+              <input class="field" value="55" />
+              <span>人</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">官网</div>
+            <div><input class="field" placeholder="请输入官网链接" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label">Twitter</div>
+            <div><input class="field" placeholder="请输入 Twitter 链接" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label">Telegram</div>
+            <div><input class="field" placeholder="请输入 Telegram 链接" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label">Discord</div>
+            <div><input class="field" placeholder="请输入 Discord 链接" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label">获奖名单展示</div>
+            <div>
+              <label class="choice">
+                <input type="checkbox" id="winnerDisplaySwitch" />
+                <span>开启展示</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>主网</div>
+            <div>
+              <select class="select">
+                <option>Ethereum</option>
+                <option>BNB Chain</option>
+                <option>Polygon</option>
+                <option>Arbitrum</option>
+                <option>Solana</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">是否投放到Payfi首页</div>
+            <div>
+              <label class="choice">
+                <input type="checkbox" id="payfiHomepageSwitch" />
+                <span>开启投放</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">分享SEO标题EN</div>
+            <div><input class="field" placeholder="不填则取活动EN名称" /></div>
+          </div>
+
+          <div class="row">
+            <div class="label">分享SEO描述EN</div>
+            <div><textarea class="textarea" placeholder="不填则取活动EN描述"></textarea></div>
+          </div>
+
+          <div class="row">
+            <div class="label">分享图</div>
+            <div class="upload">
+              <label class="upload-box">
+                <span style="font-size:20px">⇪</span>
+                <span>上传</span>
+                <input type="file" hidden />
+              </label>
+              <div class="hint">不填则取活动ICON。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="taskGroupSection" class="section">
+        <h3 class="section-title">添加任务组</h3>
+        <div class="toolbar">
+          <button id="addGroupBtn" class="primary-btn">＋ 添加任务组</button>
+        </div>
+
+        <div class="sort-panel">
+          <div class="sort-title">拖拽下方任务组调整顺序：</div>
+          <div id="sortList" class="sort-list"></div>
+        </div>
+
+        <div id="groupList" class="group-list"></div>
+      </section>
+
+      <div class="footer">
+        <button class="primary-btn">提交</button>
+        <button class="line-btn">多语言配置</button>
+      </div>
+    </div>
+  </main>
+
+  <template id="groupTemplate">
+    <div class="group-card" draggable="true">
+      <div class="group-head">
+        <div class="group-title">任务组 <span class="group-index"></span></div>
+        <button type="button" class="danger-btn delete-group">删除任务组</button>
+      </div>
+      <div class="form" style="max-width:none">
+        <div class="row">
+          <div class="label"><span class="req">*</span>任务组模块EN名称</div>
+          <div><input class="field group-name-input" placeholder="请输入任务组模块EN名称" /></div>
+        </div>
+        <div class="row">
+          <div class="label"><span class="req">*</span>规则</div>
+          <div><textarea class="textarea" placeholder="请输入任务组规则"></textarea></div>
+        </div>
+        <div class="row">
+          <div class="label">教程URL链接</div>
+          <div><input class="field" placeholder="请输入教程URL链接" /></div>
+        </div>
+        <div class="toolbar" style="margin-top:4px">
+          <button type="button" class="ghost-btn add-task">＋ 添加任务</button>
+        </div>
+        <div class="task-list"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="taskTemplate">
+    <div class="task-card">
+      <div class="task-header">
+        <div style="font-size:14px;font-weight:700">任务 <span class="task-index"></span></div>
+        <button type="button" class="danger-btn delete-task">删除</button>
+      </div>
+      <div>
+        <div class="hint" style="margin:0 0 6px">任务配置</div>
+        <select class="select task-type-select">
+          <option value="">请选择已创建任务</option>
+          <option value="trade">15 - FOMO 2.0 交易RLUSD ≥ $1400</option>
+          <option value="trade">8 - FOMO 2.0 交易VSN满1000（循环）</option>
+          <option value="trade">7 - FOMO 2.0 · Hotpick 榜单交易</option>
+          <option value="trade">6 - FOMO 2.0 交易VSN满100</option>
+          <option value="trade">5 - FOMO 2.0 交易VSN满20</option>
+          <option value="invite">3 - FOMO 2.0 邀请任务</option>
+          <option value="trade">2 - FOMO 2.0 交易指定代币（内部测试用）</option>
+          <option value="trade">1 - FOMO 2.0 · Hotpick 榜单交易（内部测试）</option>
+          <option value="holding">21 - Earn 持仓USDT ≥ 100</option>
+          <option value="api">22 - Earn API验证任务</option>
+          <option value="blank">23 - Earn 填空任务</option>
+          <option value="swap_volume">24 - Earn SWAP竞赛（交易量）</option>
+          <option value="swap_volume_pnl">25 - Earn SWAP竞赛（交易量&PNL）</option>
+        </select>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const activityLevel = document.getElementById('activityLevel');
+    const groupList = document.getElementById('groupList');
+    const addGroupBtn = document.getElementById('addGroupBtn');
+    const sortList = document.getElementById('sortList');
+    const taskGroupSection = document.getElementById('taskGroupSection');
+    const countrySearchInput = document.getElementById('countrySearchInput');
+    const selectedRegionBox = document.getElementById('selectedRegionBox');
+    const selectedCountryBox = document.getElementById('selectedCountryBox');
+    const continentList = document.getElementById('continentList');
+    const countryList = document.getElementById('countryList');
+    const countryCounter = document.getElementById('countryCounter');
+    const countryStatus = document.getElementById('countryStatus');
+    const selectAllVisibleBtn = document.getElementById('selectAllVisibleBtn');
+    const clearAllCountriesBtn = document.getElementById('clearAllCountriesBtn');
+    const resetCountrySelectionBtn = document.getElementById('resetCountrySelectionBtn');
+    const resetContinentSelectionBtn = document.getElementById('resetContinentSelectionBtn');
+
+    let swapLockedType = null;
+    let groupIdSeed = 1;
+
+    const regionData = [
+      {
+        id: 'all',
+        name: '全部区域',
+        countries: ['US','CA','BR','AR','GB','DE','FR','ES','IT','TR','NG','ZA','AE','SA','IN','JP','KR','SG','TH','VN','AU','NZ']
+      },
+      { id: 'americas', name: '美洲', countries: ['US','CA','BR','AR'] },
+      { id: 'europe', name: '欧洲', countries: ['GB','DE','FR','ES','IT','TR'] },
+      { id: 'africa', name: '非洲', countries: ['NG','ZA'] },
+      { id: 'middle-east', name: '中东', countries: ['AE','SA','TR'] },
+      { id: 'asia', name: '亚洲', countries: ['IN','JP','KR','SG','TH','VN'] },
+      { id: 'oceania', name: '大洋洲', countries: ['AU','NZ'] }
+    ];
+
+    const countryData = [
+      { code: 'US', name: 'United States', zh: '美国', continent: 'americas' },
+      { code: 'CA', name: 'Canada', zh: '加拿大', continent: 'americas' },
+      { code: 'BR', name: 'Brazil', zh: '巴西', continent: 'americas' },
+      { code: 'AR', name: 'Argentina', zh: '阿根廷', continent: 'americas' },
+      { code: 'GB', name: 'United Kingdom', zh: '英国', continent: 'europe' },
+      { code: 'DE', name: 'Germany', zh: '德国', continent: 'europe' },
+      { code: 'FR', name: 'France', zh: '法国', continent: 'europe' },
+      { code: 'ES', name: 'Spain', zh: '西班牙', continent: 'europe' },
+      { code: 'IT', name: 'Italy', zh: '意大利', continent: 'europe' },
+      { code: 'TR', name: 'Turkey', zh: '土耳其', continent: 'middle-east' },
+      { code: 'NG', name: 'Nigeria', zh: '尼日利亚', continent: 'africa' },
+      { code: 'ZA', name: 'South Africa', zh: '南非', continent: 'africa' },
+      { code: 'AE', name: 'United Arab Emirates', zh: '阿联酋', continent: 'middle-east' },
+      { code: 'SA', name: 'Saudi Arabia', zh: '沙特阿拉伯', continent: 'middle-east' },
+      { code: 'IN', name: 'India', zh: '印度', continent: 'asia' },
+      { code: 'JP', name: 'Japan', zh: '日本', continent: 'asia' },
+      { code: 'KR', name: 'South Korea', zh: '韩国', continent: 'asia' },
+      { code: 'SG', name: 'Singapore', zh: '新加坡', continent: 'asia' },
+      { code: 'TH', name: 'Thailand', zh: '泰国', continent: 'asia' },
+      { code: 'VN', name: 'Vietnam', zh: '越南', continent: 'asia' },
+      { code: 'AU', name: 'Australia', zh: '澳大利亚', continent: 'oceania' },
+      { code: 'NZ', name: 'New Zealand', zh: '新西兰', continent: 'oceania' }
+    ];
+
+    const regionState = {
+      activeContinentId: 'all',
+      selectedContinentIds: new Set(['all']),
+      selectedCountryCodes: new Set(countryData.map(country => country.code)),
+      keyword: ''
+    };
+
+    function toggleLevelFields() {
+      const level = (activityLevel?.value || 'B').trim();
+      const levelExtraRow = document.getElementById('levelExtraRow');
+      const jumpLinkRow = document.getElementById('jumpLinkRow');
+      const isA = level === 'A';
+      const isS = level === 'S';
+      const isB = level === 'B';
+
+      if (levelExtraRow) levelExtraRow.style.display = (isA || isS) ? 'grid' : 'none';
+      if (jumpLinkRow) jumpLinkRow.style.display = isS ? 'grid' : 'none';
+      if (taskGroupSection) taskGroupSection.style.display = isS ? 'none' : 'block';
+    }
+
+    function togglePeopleExt() {
+      const checked = document.querySelector('input[name="displayPeople"]:checked');
+      const value = checked ? checked.value : 'participant';
+      const peopleExtRow = document.getElementById('peopleExtRow');
+      if (peopleExtRow) peopleExtRow.style.display = value === 'none' ? 'none' : 'grid';
+    }
+
+    function getAllTaskTypeSelects() {
+      return [...document.querySelectorAll('.task-type-select')];
+    }
+
+    function applySwapLockUI() {
+      const selects = getAllTaskTypeSelects();
+      const isLocked = !!swapLockedType;
+      selects.forEach(select => {
+        [...select.options].forEach(opt => {
+          const isSwap = ['swap_volume','swap_volume_pnl'].includes(opt.value);
+          opt.disabled = isLocked && isSwap && opt.value !== swapLockedType;
+        });
+        if (isLocked && ['swap_volume','swap_volume_pnl'].includes(select.value)) {
+          select.value = swapLockedType;
+        }
+      });
+    }
+
+    function recalcSwapLock() {
+      const values = getAllTaskTypeSelects().map(s => s.value).filter(v => ['swap_volume','swap_volume_pnl'].includes(v));
+      swapLockedType = values.length ? values[0] : null;
+      applySwapLockUI();
+    }
+
+    function refreshGroupIndex() {
+      [...groupList.querySelectorAll('.group-card')].forEach((card, idx) => {
+        card.querySelector('.group-index').textContent = idx + 1;
+      });
+    }
+
+    function refreshTaskIndex(groupCard) {
+      [...groupCard.querySelectorAll('.task-card')].forEach((card, idx) => {
+        card.querySelector('.task-index').textContent = idx + 1;
+      });
+    }
+
+    function getGroupName(card) {
+      const input = card.querySelector('.group-name-input');
+      return input?.value?.trim() || `任务组 ${card.dataset.groupId}`;
+    }
+
+    function reorderGroups(dragId, targetId, placeAfter) {
+      if (!dragId || !targetId || dragId === targetId) return;
+      const dragCard = groupList.querySelector(`.group-card[data-group-id="${dragId}"]`);
+      const targetCard = groupList.querySelector(`.group-card[data-group-id="${targetId}"]`);
+      if (!dragCard || !targetCard) return;
+      placeAfter ? targetCard.after(dragCard) : targetCard.before(dragCard);
+      refreshGroupIndex();
+      syncSortList();
+    }
+
+    function addDragHandlers(node) {
+      node.addEventListener('dragstart', e => {
+        node.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', node.dataset.groupId);
+      });
+      node.addEventListener('dragend', () => node.classList.remove('dragging'));
+      node.addEventListener('dragover', e => e.preventDefault());
+      node.addEventListener('drop', e => {
+        e.preventDefault();
+        const dragId = e.dataTransfer.getData('text/plain');
+        const rect = node.getBoundingClientRect();
+        reorderGroups(dragId, node.dataset.groupId, (e.clientY - rect.top) > rect.height / 2);
+      });
+    }
+
+    function syncSortList() {
+      sortList.innerHTML = '';
+      [...groupList.querySelectorAll('.group-card')].forEach((card, idx) => {
+        const item = document.createElement('div');
+        item.className = 'sort-item';
+        item.draggable = true;
+        item.dataset.groupId = card.dataset.groupId;
+        item.innerHTML = `
+          <div class="sort-left">
+            <span class="drag-icon">☰</span>
+            <span class="sort-badge">${idx + 1}</span>
+            <span class="sort-name">模块：${getGroupName(card)}</span>
+          </div>
+          <button type="button" class="sort-remove">×</button>
+        `;
+        item.querySelector('.sort-remove').addEventListener('click', () => {
+          const target = groupList.querySelector('.group-card[data-group-id="' + item.dataset.groupId + '"]');
+          if (target) target.remove();
+          refreshGroupIndex();
+          syncSortList();
+          recalcSwapLock();
+        });
+        addDragHandlers(item);
+        sortList.appendChild(item);
+      });
+    }
+
+    function createTask(groupCard) {
+      const tpl = document.getElementById('taskTemplate');
+      const node = tpl.content.firstElementChild.cloneNode(true);
+      const typeSelect = node.querySelector('.task-type-select');
+
+      typeSelect.addEventListener('change', () => {
+        const value = typeSelect.value;
+        if (swapLockedType && ['swap_volume','swap_volume_pnl'].includes(value) && value !== swapLockedType) {
+          typeSelect.value = swapLockedType;
+        }
+        recalcSwapLock();
+      });
+
+      node.querySelector('.delete-task').addEventListener('click', () => {
+        node.remove();
+        refreshTaskIndex(groupCard);
+        recalcSwapLock();
+      });
+
+      groupCard.querySelector('.task-list').appendChild(node);
+      refreshTaskIndex(groupCard);
+      applySwapLockUI();
+    }
+
+    function createGroup() {
+      const tpl = document.getElementById('groupTemplate');
+      const node = tpl.content.firstElementChild.cloneNode(true);
+      node.dataset.groupId = String(groupIdSeed++);
+
+      const groupNameInput = node.querySelector('.group-name-input');
+      groupNameInput.addEventListener('input', syncSortList);
+
+      node.querySelector('.delete-group').addEventListener('click', () => {
+        node.remove();
+        refreshGroupIndex();
+        syncSortList();
+        recalcSwapLock();
+      });
+
+      node.querySelector('.add-task').addEventListener('click', () => createTask(node));
+      addDragHandlers(node);
+
+      groupList.appendChild(node);
+      refreshGroupIndex();
+      createTask(node);
+      syncSortList();
+    }
+
+    function getRegionById(id) {
+      return regionData.find(region => region.id === id);
+    }
+
+    function getCountryByCode(code) {
+      return countryData.find(country => country.code === code);
+    }
+
+    function getVisibleCountries() {
+      const keyword = regionState.keyword.trim().toLowerCase();
+      const activeRegion = getRegionById(regionState.activeContinentId) || getRegionById('all');
+      return countryData.filter(country => {
+        const matchesRegion = activeRegion.id === 'all' || activeRegion.countries.includes(country.code);
+        const matchesKeyword = !keyword || [country.code, country.name, country.zh].some(value => value.toLowerCase().includes(keyword));
+        return matchesRegion && matchesKeyword;
+      });
+    }
+
+    function syncRegionSelectionFromCountries() {
+      const selected = regionState.selectedCountryCodes;
+      if (selected.size === countryData.length) {
+        regionState.selectedContinentIds = new Set(['all']);
+        return;
+      }
+
+      const next = new Set();
+      regionData.filter(region => region.id !== 'all').forEach(region => {
+        if (region.countries.every(code => selected.has(code))) {
+          next.add(region.id);
+        }
+      });
+      regionState.selectedContinentIds = next;
+    }
+
+    function renderChip(container, label, onRemove) {
+      const chip = document.createElement('span');
+      chip.className = 'mini-tag';
+      chip.innerHTML = `<span>${label}</span>`;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = '×';
+      btn.addEventListener('click', onRemove);
+      chip.appendChild(btn);
+      container.appendChild(chip);
+    }
+
+    function renderSelectedSummary() {
+      selectedRegionBox.innerHTML = '';
+      selectedCountryBox.innerHTML = '';
+
+      const regionIds = [...regionState.selectedContinentIds];
+      if (!regionIds.length) {
+        selectedRegionBox.innerHTML = '<span class="placeholder">未限制区域</span>';
+      } else {
+        regionIds.forEach(regionId => {
+          const region = getRegionById(regionId);
+          if (!region) return;
+          renderChip(selectedRegionBox, region.name, () => {
+            if (region.id === 'all') {
+              regionState.selectedCountryCodes.clear();
+              regionState.selectedContinentIds.clear();
+            } else {
+              region.countries.forEach(code => regionState.selectedCountryCodes.delete(code));
+              syncRegionSelectionFromCountries();
+            }
+            renderRegionPicker();
+          });
+        });
+      }
+
+      const selectedCountries = countryData.filter(country => regionState.selectedCountryCodes.has(country.code));
+      if (!selectedCountries.length) {
+        selectedCountryBox.innerHTML = '<span class="placeholder">未选择国家</span>';
+      } else {
+        selectedCountries.forEach(country => {
+          renderChip(selectedCountryBox, `${country.zh} (${country.code})`, () => {
+            regionState.selectedCountryCodes.delete(country.code);
+            syncRegionSelectionFromCountries();
+            renderRegionPicker();
+          });
+        });
+      }
+    }
+
+    function renderContinents() {
+      continentList.innerHTML = '';
+      regionData.forEach(region => {
+        const item = document.createElement('label');
+        item.className = 'continent-item' + (regionState.activeContinentId === region.id ? ' active' : '');
+        const checked = regionState.selectedContinentIds.has(region.id);
+        item.innerHTML = `
+          <input type="checkbox" ${checked ? 'checked' : ''} />
+          <div>${region.name}</div>
+          <span class="continent-meta">${region.id === 'all' ? countryData.length : region.countries.length}</span>
+        `;
+
+        const checkbox = item.querySelector('input');
+        checkbox.addEventListener('click', e => e.stopPropagation());
+        checkbox.addEventListener('change', e => {
+          const isChecked = e.target.checked;
+          if (region.id === 'all') {
+            if (isChecked) {
+              regionState.selectedCountryCodes = new Set(countryData.map(country => country.code));
+              regionState.selectedContinentIds = new Set(['all']);
+            } else {
+              regionState.selectedCountryCodes.clear();
+              regionState.selectedContinentIds.clear();
+            }
+          } else {
+            region.countries.forEach(code => {
+              if (isChecked) regionState.selectedCountryCodes.add(code);
+              else regionState.selectedCountryCodes.delete(code);
+            });
+            syncRegionSelectionFromCountries();
+          }
+          renderRegionPicker();
+        });
+
+        item.addEventListener('click', event => {
+          if (event.target.tagName !== 'INPUT') {
+            regionState.activeContinentId = region.id;
+            renderRegionPicker();
+          }
+        });
+
+        continentList.appendChild(item);
+      });
+    }
+
+    function renderCountries() {
+      const visibleCountries = getVisibleCountries();
+      countryList.innerHTML = '';
+      countryCounter.textContent = `${visibleCountries.length} 个国家`;
+      countryStatus.textContent = regionState.keyword
+        ? `当前关键词：${regionState.keyword}`
+        : (regionState.activeContinentId === 'all' ? '展示全部国家，可直接多选' : `当前区域：${getRegionById(regionState.activeContinentId)?.name || '全部区域'}`);
+
+      if (!visibleCountries.length) {
+        countryList.innerHTML = '<div class="empty-state">没有匹配的国家，请调整区域或搜索关键词。</div>';
+        return;
+      }
+
+      visibleCountries.forEach(country => {
+        const item = document.createElement('label');
+        const checked = regionState.selectedCountryCodes.has(country.code);
+        item.className = 'country-item' + (checked ? ' selected' : '');
+        item.innerHTML = `
+          <input type="checkbox" ${checked ? 'checked' : ''} />
+          <div class="country-copy">
+            <span>${country.zh} · ${country.name}</span>
+            <span class="country-meta">${country.code}</span>
+          </div>
+        `;
+
+        const checkbox = item.querySelector('input');
+        checkbox.addEventListener('click', e => e.stopPropagation());
+        checkbox.addEventListener('change', e => {
+          if (e.target.checked) regionState.selectedCountryCodes.add(country.code);
+          else regionState.selectedCountryCodes.delete(country.code);
+          syncRegionSelectionFromCountries();
+          renderRegionPicker();
+        });
+
+        item.addEventListener('click', event => {
+          if (event.target.tagName !== 'INPUT') checkbox.click();
+        });
+
+        countryList.appendChild(item);
+      });
+    }
+
+    function renderRegionPicker() {
+      syncRegionSelectionFromCountries();
+      renderSelectedSummary();
+      renderContinents();
+      renderCountries();
+    }
+
+    const tagSelectBox = document.getElementById('tagSelectBox');
+    const tagDropdown = document.getElementById('tagDropdown');
+
+    tagSelectBox.addEventListener('click', () => {
+      tagDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', e => {
+      if (!tagSelectBox.contains(e.target) && !tagDropdown.contains(e.target)) {
+        tagDropdown.classList.add('hidden');
+      }
+    });
+
+    [...tagDropdown.querySelectorAll('.dropdown-item')].forEach(item => {
+      item.addEventListener('click', () => {
+        tagDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        tagDropdown.classList.add('hidden');
+      });
+    });
+
+    activityLevel.addEventListener('change', toggleLevelFields);
+
+    document.addEventListener('change', e => {
+      if (e.target && e.target.name === 'displayPeople') {
+        togglePeopleExt();
+      }
+    });
+
+    addGroupBtn.addEventListener('click', createGroup);
+
+    countrySearchInput.addEventListener('input', e => {
+      regionState.keyword = e.target.value;
+      renderCountries();
+    });
+
+    selectAllVisibleBtn.addEventListener('click', () => {
+      getVisibleCountries().forEach(country => regionState.selectedCountryCodes.add(country.code));
+      syncRegionSelectionFromCountries();
+      renderRegionPicker();
+    });
+
+    clearAllCountriesBtn.addEventListener('click', () => {
+      regionState.selectedCountryCodes.clear();
+      regionState.selectedContinentIds.clear();
+      renderRegionPicker();
+    });
+
+    resetCountrySelectionBtn.addEventListener('click', () => {
+      regionState.selectedCountryCodes.clear();
+      syncRegionSelectionFromCountries();
+      renderRegionPicker();
+    });
+
+    resetContinentSelectionBtn.addEventListener('click', () => {
+      regionState.activeContinentId = 'all';
+      regionState.selectedContinentIds = new Set(['all']);
+      regionState.selectedCountryCodes = new Set(countryData.map(country => country.code));
+      countrySearchInput.value = '';
+      regionState.keyword = '';
+      renderRegionPicker();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      toggleLevelFields();
+      togglePeopleExt();
+      createGroup();
+      renderRegionPicker();
+    });
+  </script>
+</body>
+</html>
