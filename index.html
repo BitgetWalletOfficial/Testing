@@ -173,14 +173,16 @@
     .sort-remove{border:none;background:transparent;color:#c9cdd4;font-size:24px;cursor:pointer}
 
     .group-list{display:flex;flex-direction:column;gap:16px;width:100%}
-    .group-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:20px;position:relative}
-    .group-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
-    .group-title{font-size:28px;font-weight:700;line-height:1.2}
-    .group-card .row{grid-template-columns:240px minmax(0,1fr)}
-    .group-card .label{font-size:18px;line-height:44px}
-    .group-card .field,.group-card .select,.group-card .date-input{height:54px;font-size:18px}
-    .group-card .textarea{min-height:110px;font-size:18px}
-    .task-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+    .group-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:20px 24px;position:relative}
+    .group-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f2f3f5}
+    .group-title{font-size:20px;font-weight:700;line-height:1.2}
+    .group-card .form{max-width:none}
+    .group-card .row{grid-template-columns:220px minmax(0,1fr);gap:24px}
+    .group-card .label{font-size:14px;line-height:36px}
+    .group-card .field,.group-card .select,.group-card .date-input{height:44px;font-size:14px}
+    .group-card .textarea{min-height:110px;font-size:14px}
+    .group-card .toolbar{justify-content:flex-start;padding-left:244px;margin:8px 0 0}
+    .task-list{display:flex;flex-direction:column;gap:12px;margin-top:12px;padding-left:244px}
     .task-card{border:1px solid #edf0f3;border-radius:10px;padding:14px;background:#fbfcfd}
     .task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 
@@ -485,7 +487,7 @@
         <div class="group-title">任务组 <span class="group-index"></span></div>
         <button type="button" class="danger-btn delete-group">删除任务组</button>
       </div>
-      <div class="form" style="max-width:none">
+      <div class="form">
         <div class="row">
           <div class="label"><span class="req">*</span>任务组模块EN名称</div>
           <div><input class="field group-name-input" placeholder="请输入任务组模块EN名称" /></div>
