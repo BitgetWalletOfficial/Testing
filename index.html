@@ -363,6 +363,11 @@
               </div>
             </div>
 
+            <div id="apiJumpRow" class="row hidden">
+              <div class="label">任务按钮跳转链接</div>
+              <div><textarea class="textarea" placeholder="例如: https://web3.bitget.com/zh-CN/earn"></textarea></div>
+            </div>
+
             <div id="holdingModeRow" class="row hidden">
               <div class="label"><span class="req">*</span>持仓范围</div>
               <div class="radio-row">
@@ -484,7 +489,7 @@
     const taskType = document.getElementById('taskType');
     const rows = {
       trade: ['tradeBlockRow','tradeTokenRow','tradeThresholdRow','tradeLoopRow','tradeJumpRow'],
-      api: ['apiUrlRow'],
+      api: ['apiUrlRow','apiJumpRow'],
       holding: ['holdingModeRow','holdingTokenRow','holdingJumpRow'],
       swapCommon: ['swapTimeRow','swapJumpRow','swapVolumeRankRow','swapVolumeRewardRow','swapVolumeTokenRow'],
       swapPnl: ['swapPnlRankRow','swapPnlRewardRow','swapMinVolumeRow']
