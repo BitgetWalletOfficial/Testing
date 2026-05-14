@@ -17,9 +17,9 @@
 
     <div class="mb-6 flex items-center justify-between">
       <div id="levelTabs" class="flex gap-3" role="tablist" aria-label="活动级别">
-        <button type="button" class="activity-tab" data-level="B" role="tab">B级活动</button>
-        <button type="button" class="activity-tab" data-level="A" role="tab">A级活动</button>
-        <button type="button" class="activity-tab" data-level="S" role="tab">S级活动</button>
+        <button type="button" class="activity-tab rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700" data-level="B" role="tab" aria-selected="true" onclick="setActiveLevel('B')">B级活动</button>
+        <button type="button" class="activity-tab rounded-2xl border border-gray-300 bg-white px-5 py-2.5 text-sm transition hover:border-blue-300 hover:text-blue-600" data-level="A" role="tab" aria-selected="false" onclick="setActiveLevel('A')">A级活动</button>
+        <button type="button" class="activity-tab rounded-2xl border border-gray-300 bg-white px-5 py-2.5 text-sm transition hover:border-blue-300 hover:text-blue-600" data-level="S" role="tab" aria-selected="false" onclick="setActiveLevel('S')">S级活动</button>
       </div>
 
       <button id="saveSort" type="button" class="rounded-2xl bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800">
@@ -35,7 +35,97 @@
         <div>结束时间</div>
       </div>
 
-      <div id="activityList"></div>
+      <div id="activityList">
+        <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">1</div>
+            <div class="flex flex-col text-xs leading-none">
+              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-up" data-index="0" disabled aria-disabled="true" aria-label="上移 XLM Airdrop campaign">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="0" aria-label="下移 XLM Airdrop campaign">↓</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold">XLM Airdrop campaign</div>
+            <div class="text-xs text-gray-500">完成任务</div>
+          </div>
+
+          <div class="break-all pr-4 text-sm">1286be6b-9943-44dc-9176-0ab6f77ae9cf</div>
+          <div class="text-sm">长期</div>
+        </div>
+
+        <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">2</div>
+            <div class="flex flex-col text-xs leading-none">
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="1" aria-label="上移 Stellar Ecosystem Trading Boost">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="1" aria-label="下移 Stellar Ecosystem Trading Boost">↓</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold">Stellar Ecosystem Trading Boost</div>
+            <div class="text-xs text-gray-500">完成任务</div>
+          </div>
+
+          <div class="break-all pr-4 text-sm">cf7660b2-beb4-4468-9726-c444ae2dba05</div>
+          <div class="text-sm">2026-04-01 23:59</div>
+        </div>
+
+        <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">3</div>
+            <div class="flex flex-col text-xs leading-none">
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="2" aria-label="上移 Swap 邀请返佣加速计划">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="2" aria-label="下移 Swap 邀请返佣加速计划">↓</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold">Swap 邀请返佣加速计划</div>
+            <div class="text-xs text-gray-500">邀请好友</div>
+          </div>
+
+          <div class="break-all pr-4 text-sm">aa12bb34-cc56-dd78-ee90-ff1122334455</div>
+          <div class="text-sm">2026-03-31 23:59</div>
+        </div>
+
+        <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">4</div>
+            <div class="flex flex-col text-xs leading-none">
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="3" aria-label="上移 FOMO 2.0 冲榜赛">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="3" aria-label="下移 FOMO 2.0 冲榜赛">↓</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold">FOMO 2.0 冲榜赛</div>
+            <div class="text-xs text-gray-500">交易瓜分奖池</div>
+          </div>
+
+          <div class="break-all pr-4 text-sm">bb98aa76-5544-3322-1100-ffeeddccbbaa</div>
+          <div class="text-sm">2026-03-28 23:59</div>
+        </div>
+
+        <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">5</div>
+            <div class="flex flex-col text-xs leading-none">
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="4" aria-label="上移 BTC 预测赛">↑</button>
+              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-down" data-index="4" disabled aria-disabled="true" aria-label="下移 BTC 预测赛">↓</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold">BTC 预测赛</div>
+            <div class="text-xs text-gray-500">参与竞猜</div>
+          </div>
+
+          <div class="break-all pr-4 text-sm">cc112233-4455-6677-8899-aabbccddeeff</div>
+          <div class="text-sm">2026-03-30 20:00</div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -193,6 +283,17 @@
       renderActivities();
     }
 
+    function setActiveLevel(level) {
+      if (!activityData[level] || activeLevel === level) {
+        return;
+      }
+
+      activeLevel = level;
+      renderPage();
+    }
+
+    window.setActiveLevel = setActiveLevel;
+
     function moveActivity(index, direction) {
       const activities = activityData[activeLevel];
       const targetIndex = index + direction;
@@ -236,8 +337,7 @@
         return;
       }
 
-      activeLevel = tab.dataset.level;
-      renderPage();
+      setActiveLevel(tab.dataset.level);
     });
 
     activityList.addEventListener('click', (event) => {
