@@ -40,8 +40,8 @@
           <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">1</div>
             <div class="flex flex-col text-xs leading-none">
-              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-up" data-index="0" disabled aria-disabled="true" aria-label="上移 XLM Airdrop campaign">↑</button>
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="0" aria-label="下移 XLM Airdrop campaign">↓</button>
+              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-up" data-index="0" onclick="event.stopPropagation(); moveActivity(0, -1); return false;" disabled aria-disabled="true" aria-label="上移 XLM Airdrop campaign">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="0" onclick="event.stopPropagation(); moveActivity(0, 1); return false;" aria-label="下移 XLM Airdrop campaign">↓</button>
             </div>
           </div>
 
@@ -58,8 +58,8 @@
           <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">2</div>
             <div class="flex flex-col text-xs leading-none">
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="1" aria-label="上移 Stellar Ecosystem Trading Boost">↑</button>
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="1" aria-label="下移 Stellar Ecosystem Trading Boost">↓</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="1" onclick="event.stopPropagation(); moveActivity(1, -1); return false;" aria-label="上移 Stellar Ecosystem Trading Boost">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="1" onclick="event.stopPropagation(); moveActivity(1, 1); return false;" aria-label="下移 Stellar Ecosystem Trading Boost">↓</button>
             </div>
           </div>
 
@@ -76,8 +76,8 @@
           <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">3</div>
             <div class="flex flex-col text-xs leading-none">
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="2" aria-label="上移 Swap 邀请返佣加速计划">↑</button>
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="2" aria-label="下移 Swap 邀请返佣加速计划">↓</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="2" onclick="event.stopPropagation(); moveActivity(2, -1); return false;" aria-label="上移 Swap 邀请返佣加速计划">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="2" onclick="event.stopPropagation(); moveActivity(2, 1); return false;" aria-label="下移 Swap 邀请返佣加速计划">↓</button>
             </div>
           </div>
 
@@ -94,8 +94,8 @@
           <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">4</div>
             <div class="flex flex-col text-xs leading-none">
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="3" aria-label="上移 FOMO 2.0 冲榜赛">↑</button>
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="3" aria-label="下移 FOMO 2.0 冲榜赛">↓</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="3" onclick="event.stopPropagation(); moveActivity(3, -1); return false;" aria-label="上移 FOMO 2.0 冲榜赛">↑</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-down" data-index="3" onclick="event.stopPropagation(); moveActivity(3, 1); return false;" aria-label="下移 FOMO 2.0 冲榜赛">↓</button>
             </div>
           </div>
 
@@ -112,8 +112,8 @@
           <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">5</div>
             <div class="flex flex-col text-xs leading-none">
-              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="4" aria-label="上移 BTC 预测赛">↑</button>
-              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-down" data-index="4" disabled aria-disabled="true" aria-label="下移 BTC 预测赛">↓</button>
+              <button type="button" class="h-5 rounded px-1 transition hover:bg-gray-100" data-action="move-up" data-index="4" onclick="event.stopPropagation(); moveActivity(4, -1); return false;" aria-label="上移 BTC 预测赛">↑</button>
+              <button type="button" class="h-5 cursor-not-allowed rounded px-1 text-gray-300" data-action="move-down" data-index="4" onclick="event.stopPropagation(); moveActivity(4, 1); return false;" disabled aria-disabled="true" aria-label="下移 BTC 预测赛">↓</button>
             </div>
           </div>
 
@@ -232,6 +232,7 @@
         const isActive = tab.dataset.level === activeLevel;
         tab.className = isActive ? tabActiveClass : tabInactiveClass;
         tab.setAttribute('aria-selected', String(isActive));
+        tab.onclick = () => setActiveLevel(tab.dataset.level);
       });
     }
 
@@ -252,6 +253,7 @@
                   class="h-5 rounded px-1 transition ${isFirst ? 'cursor-not-allowed text-gray-300' : 'hover:bg-gray-100'}"
                   data-action="move-up"
                   data-index="${index}"
+                  onclick="event.stopPropagation(); moveActivity(${index}, -1); return false;"
                   ${isFirst ? 'disabled aria-disabled="true"' : ''}
                   aria-label="上移 ${activity.title}"
                 >↑</button>
@@ -260,6 +262,7 @@
                   class="h-5 rounded px-1 transition ${isLast ? 'cursor-not-allowed text-gray-300' : 'hover:bg-gray-100'}"
                   data-action="move-down"
                   data-index="${index}"
+                  onclick="event.stopPropagation(); moveActivity(${index}, 1); return false;"
                   ${isLast ? 'disabled aria-disabled="true"' : ''}
                   aria-label="下移 ${activity.title}"
                 >↓</button>
@@ -305,6 +308,8 @@
       [activities[index], activities[targetIndex]] = [activities[targetIndex], activities[index]];
       renderActivities();
     }
+
+    window.moveActivity = moveActivity;
 
     function openConfirmModal() {
       confirmLevel.textContent = `${activeLevel}级活动`;
