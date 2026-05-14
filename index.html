@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>活动排序管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-900">
+  <main class="mx-auto max-w-[1400px] px-6 py-8">
+
+    <h1 class="mb-4 text-3xl font-bold">活动排序管理</h1>
+
+    <div id="editMeta" class="mb-6 text-sm text-gray-500">
+      最后编辑时间：2026-03-18 11:20 ｜ 修改人：melly.zhang@bitget.com
+    </div>
+
+    <div class="mb-6 flex items-center justify-between">
+      <div id="levelTabs" class="flex gap-3" role="tablist" aria-label="活动级别">
+        <button type="button" class="activity-tab" data-level="B" role="tab">B级活动</button>
+        <button type="button" class="activity-tab" data-level="A" role="tab">A级活动</button>
+        <button type="button" class="activity-tab" data-level="S" role="tab">S级活动</button>
+      </div>
+
+      <button id="saveSort" type="button" class="rounded-2xl bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800">
+        保存排序
+      </button>
+    </div>
+
+    <div class="overflow-hidden rounded-2xl border bg-white">
+      <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] bg-gray-50 px-4 py-3 text-sm font-semibold">
+        <div>排序</div>
+        <div>活动</div>
+        <div>活动ID</div>
+        <div>结束时间</div>
+      </div>
+
+      <div id="activityList"></div>
+    </div>
+
+  </main>
+
+  <script>
+    const tabActiveClass = 'rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700';
+    const tabInactiveClass = 'rounded-2xl border border-gray-300 bg-white px-5 py-2.5 text-sm transition hover:border-blue-300 hover:text-blue-600';
+
+    const activityData = {
+      B: [
+        {
+          title: 'XLM Airdrop campaign',
+          type: '完成任务',
+          id: '1286be6b-9943-44dc-9176-0ab6f77ae9cf',
+          endTime: '长期',
+        },
+        {
+          title: 'Stellar Ecosystem Trading Boost',
+          type: '完成任务',
+          id: 'cf7660b2-beb4-4468-9726-c444ae2dba05',
+          endTime: '2026-04-01 23:59',
+        },
+        {
+          title: 'Swap 邀请返佣加速计划',
+          type: '邀请好友',
+          id: 'aa12bb34-cc56-dd78-ee90-ff1122334455',
+          endTime: '2026-03-31 23:59',
+        },
+        {
+          title: 'FOMO 2.0 冲榜赛',
+          type: '交易瓜分奖池',
+          id: 'bb98aa76-5544-3322-1100-ffeeddccbbaa',
+          endTime: '2026-03-28 23:59',
+        },
+        {
+          title: 'BTC 预测赛',
+          type: '参与竞猜',
+          id: 'cc112233-4455-6677-8899-aabbccddeeff',
+          endTime: '2026-03-30 20:00',
+        },
+      ],
+      A: [
+        {
+          title: 'Launchpool 新币挖矿',
+          type: '锁仓参与',
+          id: 'a1000000-2222-4444-8888-aaaaaaaaaaaa',
+          endTime: '2026-04-10 18:00',
+        },
+        {
+          title: '合约交易挑战赛',
+          type: '交易任务',
+          id: 'a2000000-3333-5555-9999-bbbbbbbbbbbb',
+          endTime: '2026-04-05 23:59',
+        },
+        {
+          title: 'Earn 加息券活动',
+          type: '理财加息',
+          id: 'a3000000-4444-6666-0000-cccccccccccc',
+          endTime: '长期',
+        },
+      ],
+      S: [
+        {
+          title: '全球交易嘉年华',
+          type: '年度活动',
+          id: 's1000000-aaaa-bbbb-cccc-111111111111',
+          endTime: '2026-05-01 23:59',
+        },
+        {
+          title: 'VIP 专属回馈季',
+          type: 'VIP 福利',
+          id: 's2000000-bbbb-cccc-dddd-222222222222',
+          endTime: '2026-04-20 23:59',
+        },
+      ],
+    };
+
+    let activeLevel = 'B';
+
+    const activityList = document.querySelector('#activityList');
+    const levelTabs = document.querySelector('#levelTabs');
+    const saveSort = document.querySelector('#saveSort');
+    const editMeta = document.querySelector('#editMeta');
+
+    function renderTabs() {
+      document.querySelectorAll('.activity-tab').forEach((tab) => {
+        const isActive = tab.dataset.level === activeLevel;
+        tab.className = isActive ? tabActiveClass : tabInactiveClass;
+        tab.setAttribute('aria-selected', String(isActive));
+      });
+    }
+
+    function renderActivities() {
+      const activities = activityData[activeLevel];
+
+      activityList.innerHTML = activities.map((activity, index) => {
+        const isFirst = index === 0;
+        const isLast = index === activities.length - 1;
+
+        return `
+          <div class="grid grid-cols-[90px_2fr_1.6fr_1fr] items-center border-t px-4 py-4">
+            <div class="flex items-center gap-2">
+              <div class="flex h-8 w-8 items-center justify-center rounded border font-semibold">${index + 1}</div>
+              <div class="flex flex-col text-xs leading-none">
+                <button
+                  type="button"
+                  class="h-5 rounded px-1 transition ${isFirst ? 'cursor-not-allowed text-gray-300' : 'hover:bg-gray-100'}"
+                  data-action="move-up"
+                  data-index="${index}"
+                  ${isFirst ? 'disabled aria-disabled="true"' : ''}
+                  aria-label="上移 ${activity.title}"
+                >↑</button>
+                <button
+                  type="button"
+                  class="h-5 rounded px-1 transition ${isLast ? 'cursor-not-allowed text-gray-300' : 'hover:bg-gray-100'}"
+                  data-action="move-down"
+                  data-index="${index}"
+                  ${isLast ? 'disabled aria-disabled="true"' : ''}
+                  aria-label="下移 ${activity.title}"
+                >↓</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="font-semibold">${activity.title}</div>
+              <div class="text-xs text-gray-500">${activity.type}</div>
+            </div>
+
+            <div class="break-all pr-4 text-sm">${activity.id}</div>
+            <div class="text-sm">${activity.endTime}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPage() {
+      renderTabs();
+      renderActivities();
+    }
+
+    function moveActivity(index, direction) {
+      const activities = activityData[activeLevel];
+      const targetIndex = index + direction;
+
+      if (targetIndex < 0 || targetIndex >= activities.length) {
+        return;
+      }
+
+      [activities[index], activities[targetIndex]] = [activities[targetIndex], activities[index]];
+      renderActivities();
+    }
+
+    levelTabs.addEventListener('click', (event) => {
+      const tab = event.target.closest('.activity-tab');
+
+      if (!tab) {
+        return;
+      }
+
+      activeLevel = tab.dataset.level;
+      renderPage();
+    });
+
+    activityList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+
+      if (!button || button.disabled) {
+        return;
+      }
+
+      const index = Number(button.dataset.index);
+      const direction = button.dataset.action === 'move-up' ? -1 : 1;
+      moveActivity(index, direction);
+    });
+
+    saveSort.addEventListener('click', () => {
+      const now = new Date();
+      const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      editMeta.textContent = `最后编辑时间：${formatted} ｜ 修改人：melly.zhang@bitget.com`;
+      saveSort.textContent = '已保存';
+
+      window.setTimeout(() => {
+        saveSort.textContent = '保存排序';
+      }, 1200);
+    });
+
+    renderPage();
+  </script>
+</body>
+</html>
